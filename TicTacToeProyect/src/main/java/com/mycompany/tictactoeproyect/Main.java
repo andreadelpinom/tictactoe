@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package com.mycompany.tictactoeproyect;
+import javax.swing.JFrame;
+
 
 /**
  *
@@ -11,7 +13,21 @@ package com.mycompany.tictactoeproyect;
  */
 public class Main {
     public static void main(String[] args){
-        ConexionBD obj = new ConexionBD();
-        obj.obtenerConexcionBasePostgres();
+        
+        ConexionBD conexion = new ConexionBD();
+        conexion.obtenerConexcionBasePostgres();  
+        
+        JFrame frame = new JFrame("Tic Tac Toe - Inicio de Sesión");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 500); 
+        frame.setResizable(false);
+
+        LogIn logInPanel = new LogIn(conexion); 
+
+        frame.add(logInPanel);
+
+        frame.setLocationRelativeTo(null); 
+        frame.setVisible(true);
+        
     }
 }
