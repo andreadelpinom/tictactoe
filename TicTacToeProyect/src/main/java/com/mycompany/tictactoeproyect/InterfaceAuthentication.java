@@ -17,6 +17,7 @@ public class InterfaceAuthentication extends JFrame {
     private boolean isLogin = true;
     private String email;
     private String password;
+    @SuppressWarnings("unused")
     private String category;
     private String nombre;
     private SeguridadDao seguridadDao;
