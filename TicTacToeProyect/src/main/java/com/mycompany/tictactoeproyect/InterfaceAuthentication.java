@@ -5,6 +5,7 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.sql.Connection;
 
 public class InterfaceAuthentication extends JFrame {
     private JPanel panel;
@@ -17,7 +18,8 @@ public class InterfaceAuthentication extends JFrame {
     private String email;
     private String password;
     private String category;
-    private String nombreApellido;
+    private String nombre;
+    private SeguridadDao seguridadDao;
 
     public InterfaceAuthentication() {
         setUndecorated(true);
@@ -26,7 +28,11 @@ public class InterfaceAuthentication extends JFrame {
         setSize(400, 470);
         setLocationRelativeTo(null);
         setResizable(false);
-
+        
+        ConexionBD conexionBD = new ConexionBD();
+        Connection connection = conexionBD.obtenerConexcionBasePostgres();
+        seguridadDao = new SeguridadDao(connection);
+        
         panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -50,7 +56,9 @@ public class InterfaceAuthentication extends JFrame {
         panel.add(closeButton);
 
         // Logo
-        JLabel titleLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoT.png"));
+        //JLabel titleLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoT.png"));
+        JLabel titleLabel = new JLabel(new ImageIcon(".\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoT.png"));
+
         titleLabel.setBounds(25, 80, 350, 50);
         panel.add(titleLabel);
 
@@ -81,7 +89,7 @@ public class InterfaceAuthentication extends JFrame {
         panel.add(passwordField);
 
         // Cuadro de Categoría (solo en Sign Up)
-        categoryBox = new JComboBox<>(new String[]{"Profesor", "Estudiante"});
+        categoryBox = new JComboBox<>(new String[]{"profesor", "estudiante"});
         styleComboBox(categoryBox);
         categoryBox.setBounds(50, 270, 300, 30);
         categoryBox.setVisible(false); // Oculto en Login
@@ -98,9 +106,35 @@ public class InterfaceAuthentication extends JFrame {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (isLogin) { // Solo ejecuta Login si estamos en modo Login
                     System.out.println("AAa"); //prueba
+                                // Obtener los datos ingresados
+                    String email = emailField.getText().trim();
+                    String password = new String(passwordField.getPassword()).trim();
+
+                    // Validar que no estén vacíos
+                    if (email.isEmpty() || password.isEmpty() || email.equals("Email") || password.equals("Password")) {
+                        JOptionPane.showMessageDialog(null, "Por favor, ingresa tu correo y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                // Llamar al DAO para verificar las credenciales
+                String resultado = seguridadDao.verificarUsuario(email, password);
+                System.out.println(resultado);
+                // Mostrar mensaje basado en el resultado
+                switch (resultado) {
+                    case "Inicio de sesión exitoso.":
+                        JOptionPane.showMessageDialog(null, resultado, "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+                        // Aquí puedes redirigir al usuario a la siguiente ventana
+                    break;
+                    case "Contraseña incorrecta.":
+                    case "Correo no encontrado.":
+                        JOptionPane.showMessageDialog(null, resultado, "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Error inesperado: " + resultado, "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
 
                     //Método desde la clase ConexionBD que valide los datos en la tabla Usuario
-
+                        
                 } else { // Solo ejecuta registrar() si estamos en modo Sign Up
                     registrar();
 
@@ -180,50 +214,63 @@ public class InterfaceAuthentication extends JFrame {
 
     private void registrar() {
         // Obtener los valores de los campos
-        email = emailField.getText();
-        password = new String(passwordField.getPassword());
-        category = categoryBox.isVisible() ? (String) categoryBox.getSelectedItem() : null;
-    
-        // Validar que no estén vacíos
-        if (email.isEmpty() || password.isEmpty() || 
-            email.equals("Email") || password.equals("Password")){
+        email = emailField.getText().trim();
+        password = new String(passwordField.getPassword()).trim();
+        category = (String) categoryBox.getSelectedItem();
+
+        // Validar los datos
+        if (email.isEmpty() || password.isEmpty() || email.equals("Email") || password.equals("Password")) {
             JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-    
-        //System.out.println("Username: " + username);
-        //System.out.println("Password: " + password);
-        //System.out.println("Categoría: " + category);
-    
-        JOptionPane.showMessageDialog(this, "Registro exitoso.", "Información", JOptionPane.INFORMATION_MESSAGE);
-        toggleAuth();
 
-        // Pedir nombre y apellido
-        nombreApellido = JOptionPane.showInputDialog(this, 
-        "Ingresa tu nombre y apellido:", 
-        "Información adicional", 
-        JOptionPane.QUESTION_MESSAGE).trim();
+        // Pedir nombre
+        String nombre = JOptionPane.showInputDialog(this, 
+            "Ingresa tu nombre:", 
+            "Información adicional", 
+            JOptionPane.QUESTION_MESSAGE);
 
-        // Verificar si ingresó algo
-        if (nombreApellido.isEmpty()) {
-            //boolean validate = true;
-            while (true){
-                JOptionPane.showMessageDialog(this, "No ingresaste tu nombre y apellido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                nombreApellido = JOptionPane.showInputDialog(this, 
-                "Ingresa tu nombre y apellido:", 
+        // Verificar si el usuario presionó Cancelar
+        if (nombre == null) {
+            JOptionPane.showMessageDialog(this, "Operación cancelada.", "Cancelación", JOptionPane.INFORMATION_MESSAGE);
+            return; // Termina el proceso
+        }
+
+        // Eliminar espacios al inicio y final
+        nombre = nombre.trim();
+
+        // Verificar si el nombre está vacío
+        while (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No ingresaste tu nombre.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            nombre = JOptionPane.showInputDialog(this, 
+                "Ingresa tu nombre:", 
                 "Información adicional", 
-                JOptionPane.QUESTION_MESSAGE).trim();
-                if (!nombreApellido.isEmpty()){
-                    break;
-                }
+                JOptionPane.QUESTION_MESSAGE);
+
+            if (nombre == null) { // Manejo de cancelar en el bucle
+                JOptionPane.showMessageDialog(this, "Operación cancelada.", "Cancelación", JOptionPane.INFORMATION_MESSAGE);
+                return;
             }
+
+            nombre = nombre.trim();
+        }
+        // Llamar al DAO para registrar el usuario
+        String resultado = seguridadDao.registrarUsuario(nombre,email, password, category);
+
+        // Mostrar el resultado del registro
+        JOptionPane.showMessageDialog(this, resultado, "Resultado", resultado.contains("exitosamente") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+
+        // Si fue exitoso, volver al modo Login
+        if (resultado.contains("exitosamente")) {
+            toggleAuth();
         }
 
         // Limpiar los campos después del registro
         emailField.setText("Email");
         passwordField.setText("Password");
-        categoryBox.setSelectedIndex(0);
+        categoryBox.setSelectedIndex(0);  
     }
+
     
 
     public static void main(String[] args) {
