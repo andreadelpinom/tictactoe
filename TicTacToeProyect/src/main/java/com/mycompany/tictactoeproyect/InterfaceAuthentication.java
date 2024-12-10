@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.sql.Connection;
+import java.util.Map;
 
 public class InterfaceAuthentication extends JFrame {
     private JPanel panel;
@@ -123,6 +124,27 @@ public class InterfaceAuthentication extends JFrame {
                 switch (resultado) {
                     case "Inicio de sesión exitoso.":
                         JOptionPane.showMessageDialog(null, resultado, "Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+                        
+                        Map<String, Object> usuario = seguridadDao.obtenerRolYId(connection, email);
+                        String rol = (String) usuario.get("rol");
+                        int idUsuario = (int) usuario.get("id_usuario");
+                        if ("profesor".equals(rol)) {
+                            // Abrir la ventana o funcionalidades del profesor
+                            dispose();
+                            System.out.println("Bienvenido profesor. ID: " + idUsuario);
+                            InterfaceCreation interfaceMaestro = new InterfaceCreation(idUsuario);
+                            interfaceMaestro.setVisible(true);
+                        } else if ("estudiante".equals(rol)) {
+                            dispose();
+                            InterfaceCode interfacecode= new InterfaceCode();
+                            interfacecode.setVisible(true);
+                            System.out.println("Bienvenido estudiante. ID: " + idUsuario);
+                            // Abrir la ventana o funcionalidades del estudiante
+                        } 
+                        
+                        else {
+                            System.out.println("Rol no reconocido.");
+                        }
                         // Aquí puedes redirigir al usuario a la siguiente ventana
                     break;
                     case "Contraseña incorrecta.":

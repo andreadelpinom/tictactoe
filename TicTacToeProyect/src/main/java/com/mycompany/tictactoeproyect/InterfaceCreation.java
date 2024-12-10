@@ -4,21 +4,50 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 public class InterfaceCreation extends JFrame {
     private JLabel tituloLabel;
     private JButton subirArchivoButton;
     private JTextArea estadoArea;
     private JPanel mainPanel;
+    private PantallaMaestroDao pantallaMaestroDao;
+    private GestorPreguntas gestorpreguntas;
+    private int idUsuario;
+    private String codigo;
+    private Connection connection;
 
-    public InterfaceCreation() {
+    public InterfaceCreation(int idUsuario) {
+        this.idUsuario= idUsuario;
         setUndecorated(true);
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(18, 32, 47));
-        
+        setVisible(true);  // Hacer visible la ventana
+
+                
+        //Clases asociadas 
+        ConexionBD conexionBD = new ConexionBD();
+        connection = conexionBD.obtenerConexcionBasePostgres();
+        pantallaMaestroDao= new PantallaMaestroDao(connection);
+        gestorpreguntas = new GestorPreguntas();
+
         // Botón para cerrar la ventana
         JButton closeButton = new JButton("X");
         closeButton.setBackground(Color.RED);
@@ -56,7 +85,13 @@ public class InterfaceCreation extends JFrame {
         subirArchivoButton.setForeground(Color.WHITE);
         subirArchivoButton.setFont(new Font("Dialog", Font.PLAIN, 16));
         subirArchivoButton.setFocusPainted(false);
-        subirArchivoButton.addActionListener(e -> subirArchivo());
+        subirArchivoButton.addActionListener(e -> {
+            try {
+                subirArchivo();
+            } catch (SQLException ex) {
+                Logger.getLogger(InterfaceCreation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         mainPanel.add(Box.createVerticalStrut(20));
         mainPanel.add(subirArchivoButton);
@@ -71,13 +106,107 @@ public class InterfaceCreation extends JFrame {
         estadoArea.setForeground(Color.WHITE);
         estadoArea.setBackground(new Color(18, 32, 47));
     }
+    
+    //Genera Codigo de la Partida
+    
+    public  String generarCodigo(int longitud, Connection connection) throws SQLException {
+        boolean existeCodigo = true;
+
+        // Definir el conjunto de caracteres permitidos
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        // Crear una instancia de SecureRandom para generar números aleatorios
+        SecureRandom random = new SecureRandom();
+
+        // Crear un StringBuilder para construir el código
+        StringBuilder codigoGenerado = new StringBuilder(longitud);
+
+        // Generar códigos hasta que uno sea único
+        while (existeCodigo) {
+            codigoGenerado.setLength(0);  // Limpiar el contenido del StringBuilder
+            for (int i = 0; i < longitud; i++) {
+                int indice = random.nextInt(caracteres.length());
+                codigoGenerado.append(caracteres.charAt(indice));
+            }
+
+            codigo = codigoGenerado.toString();
+
+            // Verificar si el código ya existe en la base de datos
+            String sqlVerificarCodigo = "SELECT COUNT(*) FROM Partida WHERE codigo_partida = ?";
+            try (PreparedStatement stmtVerificar = connection.prepareStatement(sqlVerificarCodigo)) {
+                stmtVerificar.setString(1, codigo);
+                try (ResultSet rs = stmtVerificar.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // El código no existe, es único
+                        existeCodigo = false;
+                    }
+                }
+            }
+        }
+
+        return codigo;  // Retorna el código único
+    }
+
+    
 
     // Sube el archivo y cambia la interfaz
-    private void subirArchivo() {
-        
-        //Agregar lógica para subir archivo a la BD
+    private void subirArchivo() throws SQLException {
+        codigo = generarCodigo(6,connection);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Selecciona el archivo de preguntas");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos de texto (*.txt)", "txt"));
 
-        tituloLabel.setText("Código: v5Xfsd");
+        int resultado = fileChooser.showOpenDialog(null); // 'null' si no hay una ventana padre
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivo = fileChooser.getSelectedFile();
+            try {
+                // Llamar al método para leer las preguntas desde el archivo
+                List<Map<String, Object>> preguntas = GestorPreguntas.leerPreguntasDesdeArchivo(archivo.getAbsolutePath());
+            
+                for (Map<String, Object> pregunta : preguntas) {
+                //System.out.println("Pregunta: " + pregunta.get("texto"));
+                String[] opciones = (String[]) pregunta.get("opciones");
+                System.out.println("Opciones: ");
+                for (int i = 0; i < opciones.length; i++) {
+                    System.out.println((i + 1) + ") " + opciones[i]);
+                }
+                System.out.println("Respuesta correcta: Opción " + pregunta.get("correcta"));
+                System.out.println("-------------");
+                }
+                
+                
+                pantallaMaestroDao.crearPartida(codigo, idUsuario);
+                
+                pantallaMaestroDao.insertarPreguntasYRespuestasYAsociarPartida(preguntas,codigo);
+
+            
+            } catch (IOException e) {
+                e.printStackTrace(); // Imprime la excepción en la consola
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error en el formato del archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(null, 
+                "Archivo cargado con éxito: " + archivo.getName(),
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+            // Aquí puedes continuar con el flujo de trabajo, como procesar el archivo.
+            System.out.println("Archivo seleccionado: " + archivo.getAbsolutePath());
+        } else {
+            // Mensaje si el usuario cancela la selección
+            JOptionPane.showMessageDialog(null, 
+                "No se seleccionó ningún archivo.", 
+                "Aviso", 
+                JOptionPane.WARNING_MESSAGE);
+        }
+        //Agregar lógica para subir archivo a la BD
+                
+
+        tituloLabel.setText("Código:"+ codigo);
         tituloLabel.setFont(new Font("Dialog", Font.BOLD, 24));
         remove(subirArchivoButton);
 
@@ -102,6 +231,7 @@ public class InterfaceCreation extends JFrame {
         repaint();
     }
 
+
     // Método Partida en Curso
     public void partidaEnCurso() {
         tituloLabel.setForeground(Color.RED);
@@ -116,9 +246,11 @@ public class InterfaceCreation extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            InterfaceCreation ventana = new InterfaceCreation();
-            ventana.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new InterfaceCreation(1);  // Llamada al constructor de la clase
+            }
         });
+
     }
 }

@@ -4,12 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 public class InterfaceCode extends JFrame {
     private JLabel tituloLabel;
     private JTextField code;
     private JButton guardarButton;
     private String codigoIngresado;
+    private JuegoDao juegodao;
 
     public InterfaceCode() {
         setUndecorated(true);
@@ -18,6 +20,11 @@ public class InterfaceCode extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(18, 32, 47));
+        
+        //Clases relacionadas
+        ConexionBD conexionBD = new ConexionBD();
+        Connection connection = conexionBD.obtenerConexcionBasePostgres();
+        juegodao= new JuegoDao(connection);
 
         // Botón para cerrar la ventana
         JButton closeButton = new JButton("X");
@@ -62,8 +69,15 @@ public class InterfaceCode extends JFrame {
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                guardarCodigo();
-                cambiarInterfaz();
+                String codigoPartida = code.getText(); // Obtén el código de la partida
+                // Llamar al método que verifica si la partida existe
+                boolean existe = juegodao.existePartida(codigoPartida);
+                if (existe) {
+                    cambiarInterfaz();
+                } else {
+
+                    JOptionPane.showMessageDialog(null, "La partida no existe, verifique bien el codigo.");
+                }
             }
         });
 

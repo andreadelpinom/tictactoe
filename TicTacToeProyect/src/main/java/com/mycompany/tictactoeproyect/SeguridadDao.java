@@ -9,7 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author ASUS
@@ -86,6 +87,28 @@ public class SeguridadDao {
         return "Error en el sistema. Inténtalo de nuevo más tarde.";
     }
 }
+    public  Map<String, Object> obtenerRolYId(Connection connection, String email) {
+        String sql = "SELECT id_usuario, rol FROM Usuario WHERE email = ?";
+        Map<String, Object> resultado = new HashMap<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email); // Establecer el correo
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int idUsuario = rs.getInt("id_usuario"); // Obtener el id_usuario
+                    String rol = rs.getString("rol"); // Obtener el rol
+
+                    resultado.put("id_usuario", idUsuario); // Guardar id_usuario en el Map
+                    resultado.put("rol", rol); // Guardar rol en el Map
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el id_usuario y rol: " + e.getMessage());
+        }
+
+        return resultado; // Devuelve el Map con el id_usuario y el rol
+    }
+
 
 
     

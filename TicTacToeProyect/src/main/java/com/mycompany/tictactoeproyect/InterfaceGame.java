@@ -70,7 +70,7 @@ public class InterfaceGame extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon backgroundImage = new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\Tabla.png");
+                ImageIcon backgroundImage = new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\Tabla.png");
                 g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
@@ -126,7 +126,7 @@ public class InterfaceGame extends JFrame {
         username.setForeground(Color.WHITE);
         username.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+        logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panelDerecho.add(Box.createVerticalStrut(60));
@@ -253,7 +253,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username);
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoT.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
@@ -333,7 +333,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username); //Modificar username segun jugador
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
@@ -353,7 +353,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username); //Modificar username segun jugador
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
@@ -380,7 +380,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username); //Modificar username segun jugador
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
@@ -400,7 +400,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username); //Modificar username segun jugador
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
@@ -423,7 +423,7 @@ public class InterfaceGame extends JFrame {
             panelDerecho.add(username); //Se debe mostrar EMPATE en ambos clientes
             panelDerecho.add(Box.createVerticalStrut(50));
 
-            logoLabel = new JLabel(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
+            logoLabel = new JLabel(new ImageIcon("C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\LogoNetPioneers.png"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             panelDerecho.add(logoLabel);
