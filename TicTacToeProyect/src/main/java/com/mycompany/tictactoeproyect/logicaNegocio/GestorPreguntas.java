@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.tictactoeproyect;
+package com.mycompany.tictactoeproyect.logicaNegocio;
 
 /**
  *
@@ -55,27 +55,27 @@ public class GestorPreguntas {
         return preguntas; // Retornar lista de preguntas
     }
 
-    public static void main(String[] args) {
-        try {
-            String ruta = "C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\Preguntastxt.txt"; // Ruta del archivo TXT
-            List<Map<String, Object>> preguntas = leerPreguntasDesdeArchivo(ruta);
-
-            // Ejemplo: Mostrar las preguntas leídas
-            for (Map<String, Object> pregunta : preguntas) {
-                System.out.println("Pregunta: " + pregunta.get("texto"));
-                String[] opciones = (String[]) pregunta.get("opciones");
-                System.out.println("Opciones: ");
-                for (int i = 0; i < opciones.length; i++) {
-                    System.out.println((i + 1) + ") " + opciones[i]);
-                }
-                System.out.println("Respuesta correcta: Opción " + pregunta.get("correcta"));
-                System.out.println("-------------");
-            }
-
-        } catch (IOException e) {
-            System.err.println("Error al leer el archivo: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Error en el formato del archivo: " + e.getMessage());
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            String ruta = "C:\\Users\\maxxi\\OneDrive\\Documentos\\NetBeansProjects\\tictactoe\\TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\Preguntastxt.txt"; // Ruta del archivo TXT
+//            List<Map<String, Object>> preguntas = leerPreguntasDesdeArchivo(ruta);
+//
+//            // Ejemplo: Mostrar las preguntas leídas
+//            for (Map<String, Object> pregunta : preguntas) {
+//                System.out.println("Pregunta: " + pregunta.get("texto"));
+//                String[] opciones = (String[]) pregunta.get("opciones");
+//                System.out.println("Opciones: ");
+//                for (int i = 0; i < opciones.length; i++) {
+//                    System.out.println((i + 1) + ") " + opciones[i]);
+//                }
+//                System.out.println("Respuesta correcta: Opción " + pregunta.get("correcta"));
+//                System.out.println("-------------");
+//            }
+//
+//        } catch (IOException e) {
+//            System.err.println("Error al leer el archivo: " + e.getMessage());
+//        } catch (IllegalArgumentException e) {
+//            System.err.println("Error en el formato del archivo: " + e.getMessage());
+//        }
+//    }
 }

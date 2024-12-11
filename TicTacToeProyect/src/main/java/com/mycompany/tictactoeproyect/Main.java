@@ -5,6 +5,8 @@
  */
 package com.mycompany.tictactoeproyect;
 
+import com.mycompany.tictactoeproyect.db.ConexionBD;
+
 /**
  *
  * @author ASUS

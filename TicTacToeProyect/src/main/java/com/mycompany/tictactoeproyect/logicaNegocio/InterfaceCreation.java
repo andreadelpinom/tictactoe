@@ -1,5 +1,7 @@
-package com.mycompany.tictactoeproyect;
+package com.mycompany.tictactoeproyect.logicaNegocio;
 
+import com.mycompany.tictactoeproyect.dao.PantallaMaestroDao;
+import com.mycompany.tictactoeproyect.db.ConexionBD;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -245,12 +247,12 @@ public class InterfaceCreation extends JFrame {
         estadoArea.setText("¡Ha ganado con 5 respuestas correctas!"); //Cambiar según el usuario que ganó 
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new InterfaceCreation(1);  // Llamada al constructor de la clase
-            }
-        });
-
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                new InterfaceCreation(1);  // Llamada al constructor de la clase
+//            }
+//        });
+//
+//    }
 }

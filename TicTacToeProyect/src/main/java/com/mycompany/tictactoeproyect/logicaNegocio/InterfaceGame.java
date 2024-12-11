@@ -1,11 +1,18 @@
-package com.mycompany.tictactoeproyect;
+package com.mycompany.tictactoeproyect.logicaNegocio;
 
+import com.mycompany.tictactoeproyect.dao.JuegoDao;
+import com.mycompany.tictactoeproyect.db.ConexionBD;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class InterfaceGame extends JFrame {
     private JPanel panelIzquierdo;
@@ -17,8 +24,11 @@ public class InterfaceGame extends JFrame {
     private JLabel user1Label, user2Label;
     private JLabel puntuacion1, puntuacion2;
     private int puntos = 0;
+    private JuegoDao juegoDao;
+    private String codigo;
 
-    public InterfaceGame() {
+    
+    public InterfaceGame(String codigo) {
         setUndecorated(true);
         setTitle("Tic Tac Toe - NetPioneers");
         setSize(800, 600);
@@ -26,6 +36,12 @@ public class InterfaceGame extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setResizable(false);
+        
+        //Clases asociadas
+        ConexionBD conexionBD = new ConexionBD();
+        Connection connection = conexionBD.obtenerConexcionBasePostgres();
+        juegoDao= new JuegoDao(connection);
+        this.codigo = codigo;
 
         // Panel Izquierdo
         panelIzquierdo = new JPanel();
@@ -153,90 +169,112 @@ public class InterfaceGame extends JFrame {
             this.columna = columna;
         }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            logoLabel.setVisible(false);
-            preguntaPanel = new JPanel();
-            preguntaPanel.setLayout(new GridBagLayout());
-            preguntaPanel.setBackground(new Color(20, 25, 40));
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        logoLabel.setVisible(false);
+        preguntaPanel = new JPanel();
+        preguntaPanel.setLayout(new GridBagLayout());
+        preguntaPanel.setBackground(new Color(20, 25, 40));
             //preguntaPanel.setPreferredSize(new Dimension(600, 250));
 
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.weightx = 1.0;
-            gbc.anchor = GridBagConstraints.CENTER;
-            gbc.insets = new Insets(0, 0, 30, 0);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 0, 30, 0);
 
-            JTextArea pregunta = new JTextArea("¿Cuál es la capital del Ecuador?");
-            pregunta.setForeground(Color.WHITE);
-            pregunta.setFont(new Font("Dialog", Font.BOLD, 24));
-            pregunta.setBackground(new Color(20, 25, 40));
-            pregunta.setEditable(false);
-            pregunta.setFocusable(false);
-            pregunta.setLineWrap(true);
-            pregunta.setWrapStyleWord(true);
+        // Obtener pregunta y respuestas dinámicamente
+        Map<String, Map<String, Boolean>> preguntasRespuestas = juegoDao.obtenerPreguntasConRespuestas(codigo); // Método para obtener preguntas
+        String preguntaActual = preguntasRespuestas.keySet().iterator().next();
+        System.err.println(preguntaActual);
+        Map<String, Boolean> opciones = preguntasRespuestas.get(preguntaActual);
+
+        // Crear JTextArea para mostrar la pregunta
+        JTextArea pregunta = new JTextArea(preguntaActual);
+        pregunta.setForeground(Color.WHITE);
+        pregunta.setFont(new Font("Dialog", Font.BOLD, 24));
+        pregunta.setBackground(new Color(20, 25, 40));
+        pregunta.setEditable(false);
+        pregunta.setFocusable(false);
+        pregunta.setLineWrap(true);
+        pregunta.setWrapStyleWord(true);
             //pregunta.setPreferredSize(new Dimension(600, 50));
 
-            // Agregar pregunta
-            gbc.gridy = 0;
-            preguntaPanel.add(pregunta, gbc);
+        // Agregar pregunta
+        gbc.gridy = 0;
+        preguntaPanel.add(pregunta, gbc);
 
-            // Opciones
-            JRadioButton opcion1 = new JRadioButton("Guayaquil");
-            opcion1.setFont(new Font("Dialog",Font.BOLD,18));
-            JRadioButton opcion2 = new JRadioButton("Quito");
-            opcion2.setFont(new Font("Dialog",Font.BOLD,18));
-            JRadioButton opcion3 = new JRadioButton("El Oro");
-            opcion3.setFont(new Font("Dialog",Font.BOLD,18));
-            ButtonGroup opciones = new ButtonGroup();
-            opciones.add(opcion1);
-            opciones.add(opcion2);
-            opciones.add(opcion3);
+        // Crear opciones dinámicamente
+        ButtonGroup opcionesGroup = new ButtonGroup();
+        List<JRadioButton> botonesOpciones = new ArrayList<>();
 
-            gbc.insets = new Insets(5, 0, 5, 0);
-            gbc.gridy = 1;
-            preguntaPanel.add(opcion1, gbc);
-            gbc.gridy = 2;
-            preguntaPanel.add(opcion2, gbc);
-            gbc.gridy = 3;
-            preguntaPanel.add(opcion3, gbc);
+        int y = 1; // Para las posiciones dinámicas de las opciones
+        gbc.insets = new Insets(5, 0, 5, 0);
+        for (Map.Entry<String, Boolean> opcion : opciones.entrySet()) {
+            JRadioButton opcionButton = new JRadioButton(opcion.getKey());
+            opcionButton.setFont(new Font("Dialog", Font.BOLD, 18));
+            botonesOpciones.add(opcionButton);
+            opcionesGroup.add(opcionButton);
 
-            // Botón Confirmar
-            JButton confirmar = new JButton("Confirmar");
-            confirmar.setFont(new Font("Dialog",Font.BOLD,18));
-            gbc.gridy = 4;
-            gbc.insets = new Insets(20, 0, 0, 0);
-            //confirmar.setPreferredSize(new Dimension(600, 30));
-            preguntaPanel.add(confirmar, gbc);
-
-            confirmar.addActionListener(event -> {
-                if (opcion2.isSelected()) {
-                    JOptionPane.showMessageDialog(InterfaceGame.this, "Respuesta Correcta. :)", "Resultado", JOptionPane.INFORMATION_MESSAGE);
-                    puntos++;
-                    puntuacion1.setText(""+puntos);
-                    botonesTablero[fila][columna].setIcon(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\X.png"));
-                    botonesTablero[fila][columna].setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(InterfaceGame.this, "Respuesta Incorrecta, sigue estudiando. ;)", "Resultado", JOptionPane.ERROR_MESSAGE);
-                }
-                //botonesTablero[fila][columna].setEnabled(false);
-                verificarEstadoJuego();
-                cambiarTurno();
-                mostrarInterfazInicial();
-            });
-
-            panelDerecho.removeAll();
-            panelDerecho.add(Box.createVerticalStrut(60));
-            panelDerecho.add(turnoLabel);
-            panelDerecho.add(username);
-            panelDerecho.add(Box.createVerticalStrut(0));
-            panelDerecho.add(preguntaPanel);
-            panelDerecho.revalidate();
-            panelDerecho.repaint();
+            gbc.gridy = y++;
+            preguntaPanel.add(opcionButton, gbc);
         }
+
+        // Botón Confirmar
+        JButton confirmar = new JButton("Confirmar");
+        confirmar.setFont(new Font("Dialog", Font.BOLD, 18));
+        gbc.gridy = y;
+        gbc.insets = new Insets(20, 0, 0, 0);
+            //confirmar.setPreferredSize(new Dimension(600, 30));
+        preguntaPanel.add(confirmar, gbc);
+
+        // Agregar acción al botón Confirmar
+        confirmar.addActionListener(event -> {
+            // Validar la opción seleccionada
+            String respuestaSeleccionada = botonesOpciones.stream()
+                .filter(JRadioButton::isSelected)
+                .map(AbstractButton::getText)
+                .findFirst()
+                .orElse(null);
+
+            if (respuestaSeleccionada == null) {
+                JOptionPane.showMessageDialog(InterfaceGame.this, "Por favor selecciona una respuesta.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Verificar si la respuesta es correcta
+            boolean esCorrecta = opciones.getOrDefault(respuestaSeleccionada, false);
+
+            if (esCorrecta) {
+                JOptionPane.showMessageDialog(InterfaceGame.this, "Respuesta Correcta. :)", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                puntos++;
+                puntuacion1.setText("" + puntos);
+                botonesTablero[fila][columna].setIcon(new ImageIcon("TicTacToeProyect\\src\\main\\java\\com\\mycompany\\tictactoeproyect\\X.png"));
+                botonesTablero[fila][columna].setEnabled(false);
+            } else {
+                JOptionPane.showMessageDialog(InterfaceGame.this, "Respuesta Incorrecta, sigue estudiando. ;)", "Resultado", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Validar el estado del juego y cambiar el turno
+            verificarEstadoJuego();
+            cambiarTurno();
+            mostrarInterfazInicial();
+        });
+
+        // Actualizar la interfaz
+        panelDerecho.removeAll();
+        panelDerecho.add(Box.createVerticalStrut(60));
+        panelDerecho.add(turnoLabel);
+        panelDerecho.add(username);
+        panelDerecho.add(Box.createVerticalStrut(0));
+        panelDerecho.add(preguntaPanel);
+        panelDerecho.revalidate();
+        panelDerecho.repaint();
+    }
+
 
         private void cambiarTurno() {
             if (username.getText().equals("Anthony Mora")) {
@@ -435,7 +473,8 @@ public class InterfaceGame extends JFrame {
     }
     
 
-    public static void main(String[] args) {
-        new InterfaceGame();
-    }
+// public static void main(String[] args) {
+//    SwingUtilities.invokeLater(() -> new InterfaceGame("5N4xnw"));
+//}
+
 }

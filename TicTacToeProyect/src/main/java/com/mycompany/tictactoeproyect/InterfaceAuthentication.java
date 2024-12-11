@@ -1,5 +1,9 @@
 package com.mycompany.tictactoeproyect;
 
+import com.mycompany.tictactoeproyect.logicaNegocio.InterfaceCode;
+import com.mycompany.tictactoeproyect.logicaNegocio.InterfaceCreation;
+import com.mycompany.tictactoeproyect.dao.SeguridadDao;
+import com.mycompany.tictactoeproyect.db.ConexionBD;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;

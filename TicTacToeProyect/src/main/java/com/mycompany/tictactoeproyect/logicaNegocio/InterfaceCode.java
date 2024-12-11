@@ -1,5 +1,8 @@
-package com.mycompany.tictactoeproyect;
+package com.mycompany.tictactoeproyect.logicaNegocio;
 
+import com.mycompany.tictactoeproyect.logicaNegocio.InterfaceGame;
+import com.mycompany.tictactoeproyect.dao.JuegoDao;
+import com.mycompany.tictactoeproyect.db.ConexionBD;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -100,20 +103,21 @@ public class InterfaceCode extends JFrame {
     }
 
     private void cambiarInterfaz() {
-        Container parent = code.getParent();
+        /*Container parent = code.getParent();
         parent.remove(code);
         parent.remove(guardarButton);
 
         tituloLabel.setText("Esperando rival...");
 
         parent.revalidate();
-        parent.repaint();
+        parent.repaint();*/
+        InterfaceGame interfacegame=  new InterfaceGame(code.getText());
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            InterfaceCode ventana = new InterfaceCode();
-            ventana.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            InterfaceCode ventana = new InterfaceCode();
+//            ventana.setVisible(true);
+//        });
+//    }
 }
