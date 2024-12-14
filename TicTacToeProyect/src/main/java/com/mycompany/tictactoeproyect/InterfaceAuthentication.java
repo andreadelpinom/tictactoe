@@ -9,8 +9,10 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
+import servidor.Servidor;
 
 public class InterfaceAuthentication extends JFrame {
     private JPanel panel;
@@ -141,6 +143,8 @@ public class InterfaceAuthentication extends JFrame {
                         } else if ("estudiante".equals(rol)) {
                             dispose();
                             InterfaceCode interfacecode= new InterfaceCode();
+                            System.out.println("Bienvenido estudiante. ID: " + idUsuario);
+                            // Abrir la ventana o funcionalidades del estudiante
                             interfacecode.setVisible(true);
                             System.out.println("Bienvenido estudiante. ID: " + idUsuario);
                             // Abrir la ventana o funcionalidades del estudiante
@@ -321,4 +325,19 @@ public class InterfaceAuthentication extends JFrame {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
+    
+private void iniciarServidor() {
+    // Iniciar el servidor en un hilo independiente para no bloquear la interfaz
+    new Thread(() -> {
+        try {
+            // Crear una instancia del servidor (sin necesidad de pasar el puerto)
+            Servidor servidor = new Servidor(); // Puerto ya está configurado dentro de Servidor
+            servidor.iniciar(); // Llamar al método iniciar del servidor
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al iniciar el servidor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }).start();
+}
+
 }

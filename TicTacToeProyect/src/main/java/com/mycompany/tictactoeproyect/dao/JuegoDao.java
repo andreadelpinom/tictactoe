@@ -9,9 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,7 +17,7 @@ import java.util.Map;
  * @author ASUS
  */
 public class JuegoDao {
-    private Connection connection;
+    private final Connection connection;
     
     public JuegoDao(Connection connection) {
         this.connection = connection;

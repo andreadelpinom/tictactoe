@@ -471,10 +471,4 @@ public class InterfaceGame extends JFrame {
 
         }
     }
-    
-
-// public static void main(String[] args) {
-//    SwingUtilities.invokeLater(() -> new InterfaceGame("5N4xnw"));
-//}
-
 }

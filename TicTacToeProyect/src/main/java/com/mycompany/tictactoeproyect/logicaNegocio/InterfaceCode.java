@@ -7,6 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import static java.lang.System.in;
+import static java.lang.System.out;
+import java.net.Socket;
 import java.sql.Connection;
 
 public class InterfaceCode extends JFrame {
@@ -16,6 +23,9 @@ public class InterfaceCode extends JFrame {
     private String codigoIngresado;
     private JuegoDao juegodao;
 
+     private Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
     public InterfaceCode() {
         setUndecorated(true);
         setSize(400, 250);
@@ -111,6 +121,8 @@ public class InterfaceCode extends JFrame {
 
         parent.revalidate();
         parent.repaint();*/
+        // Llamar al método que se conecta al servidor al inicializar la ventana
+        conectarAlServidor();
         InterfaceGame interfacegame=  new InterfaceGame(code.getText());
     }
 
@@ -120,4 +132,33 @@ public class InterfaceCode extends JFrame {
 //            ventana.setVisible(true);
 //        });
 //    }
+    
+    private void conectarAlServidor() {
+        try {
+            // Establecer conexión con el servidor
+            socket = new Socket("localhost", 12345); // Dirección IP y puerto del servidor
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Enviar un mensaje inicial al servidor
+            out.println("Conexión exitosa desde el cliente");
+
+            // Iniciar el hilo para leer mensajes del servidor
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String mensaje;
+                        while ((mensaje = in.readLine()) != null) {
+                            System.out.println("Mensaje del servidor: " + mensaje);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al conectar con el servidor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
