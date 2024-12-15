@@ -12,7 +12,7 @@ import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
-import servidor.Servidor;
+//import servidor.Servidor;
 
 public class InterfaceAuthentication extends JFrame {
     private JPanel panel;
@@ -326,18 +326,18 @@ public class InterfaceAuthentication extends JFrame {
         }
     }
     
-private void iniciarServidor() {
-    // Iniciar el servidor en un hilo independiente para no bloquear la interfaz
-    new Thread(() -> {
-        try {
-            // Crear una instancia del servidor (sin necesidad de pasar el puerto)
-            Servidor servidor = new Servidor(); // Puerto ya está configurado dentro de Servidor
-            servidor.iniciar(); // Llamar al método iniciar del servidor
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al iniciar el servidor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }).start();
-}
+//private void iniciarServidor() {
+//    // Iniciar el servidor en un hilo independiente para no bloquear la interfaz
+//    new Thread(() -> {
+//        try {
+//            // Crear una instancia del servidor (sin necesidad de pasar el puerto)
+//            Servidor servidor = new Servidor(); // Puerto ya está configurado dentro de Servidor
+//            servidor.iniciar(); // Llamar al método iniciar del servidor
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(this, "Error al iniciar el servidor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//    }).start();
+//}
 
 }
