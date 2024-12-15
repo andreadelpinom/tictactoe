@@ -1,7 +1,8 @@
-package com.mycompany.tictactoeproyect.logicaNegocio;
+package newGame.interfacesProject;
 
 import com.mycompany.tictactoeproyect.dao.PantallaMaestroDao;
 import com.mycompany.tictactoeproyect.db.ConexionBD;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

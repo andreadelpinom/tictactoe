@@ -17,39 +17,36 @@ public class TestClient {
             System.out.println("Conectado al servidor.");
 
             // Crear un nuevo usuario para registrar (prueba de SIGN_UP)
-            // Prueba de registro de usuario (SIGN_UP)
-            UserDTO newUser = new UserDTO();
-            newUser.setName("usuario3");
-            newUser.setPassword("123");
-            newUser.setEmail("nuevo@ddafsadfas.com");
-            newUser.setRol("estudiante");
-            Request request = new Request("SIGN_UP", newUser);
+            /// Prueba de registro de usuario (SIGN_UP)
+            /// UserDTO newUser = new UserDTO();
+            /// newUser.setName("usuario34");
+            /// newUser.setPassword("1234");
+            /// newUser.setEmail("nuevomundo@ddafsadfas.com");
+            /// newUser.setRol("estudiante");
+            /// Request request = new Request("SIGN_UP", newUser);
+            /// 
+            LoginDTO current_user = new LoginDTO();
+
+            
+            current_user.setPassword("1234");
+            current_user.setEmail("nuevomundo@ddafsadfas.com");
+            Request request2 = new Request("LOGIN", current_user);
+
+
 
             // Enviar solicitud
-            out.writeObject(request);
-            System.out.println("Solicitud de registro enviada.");
+            //out.writeObject(request);
+            //System.out.println("Solicitud de registro enviada 1.");
+            out.writeObject(request2);
+            System.out.println("Solicitud de registro enviada 2.");
 
             // Leer respuesta del servidor
             Response response = (Response) in.readObject();
             System.out.println("Respuesta del servidor: " + response.getMessage());
-
-//            // Prueba de login
-//            LoginDTO login = new LoginDTO();
-//            login.setEmail("mel@gmail.com");  // Asegúrate de configurar un usuario válido
-//            login.setPassword("123");  // Configura una contraseña para el login
-//
-//            Request request = new Request("LOGIN", login);
-//
-//            // Enviar solicitud de login
-//            out.writeObject(request);
-//            System.out.println("Solicitud de login enviada.");
-//
-//            // Leer respuesta del servidor
-//            Response response = (Response) in.readObject();
-//            System.out.println("Respuesta del servidor: " + response.getMessage());
 
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error en el cliente: " + e.getMessage());
         }
     }
 }
+

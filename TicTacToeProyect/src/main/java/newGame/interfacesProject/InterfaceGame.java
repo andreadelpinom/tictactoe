@@ -1,4 +1,4 @@
-package com.mycompany.tictactoeproyect.logicaNegocio;
+package newGame.interfacesProject;
 
 import com.mycompany.tictactoeproyect.dao.JuegoDao;
 import com.mycompany.tictactoeproyect.db.ConexionBD;

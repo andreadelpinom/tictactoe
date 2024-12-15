@@ -1,7 +1,5 @@
-package com.mycompany.tictactoeproyect;
+package newGame.interfacesProject;
 
-import com.mycompany.tictactoeproyect.logicaNegocio.InterfaceCode;
-import com.mycompany.tictactoeproyect.logicaNegocio.InterfaceCreation;
 import com.mycompany.tictactoeproyect.dao.SeguridadDao;
 import com.mycompany.tictactoeproyect.db.ConexionBD;
 import javax.swing.*;
@@ -13,6 +11,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 import servidor.Servidor;
+
 
 public class InterfaceAuthentication extends JFrame {
     private JPanel panel;
@@ -28,6 +27,7 @@ public class InterfaceAuthentication extends JFrame {
     private String category;
     private String nombre;
     private SeguridadDao seguridadDao;
+    
 
     public InterfaceAuthentication() {
         setUndecorated(true);
@@ -126,6 +126,8 @@ public class InterfaceAuthentication extends JFrame {
                 // Llamar al DAO para verificar las credenciales
                 String resultado = seguridadDao.verificarUsuario(email, password);
                 System.out.println(resultado);
+
+
                 // Mostrar mensaje basado en el resultado
                 switch (resultado) {
                     case "Inicio de sesión exitoso.":
@@ -325,6 +327,8 @@ public class InterfaceAuthentication extends JFrame {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
+
+   
     
 private void iniciarServidor() {
     // Iniciar el servidor en un hilo independiente para no bloquear la interfaz

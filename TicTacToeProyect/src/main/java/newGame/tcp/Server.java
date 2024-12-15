@@ -4,6 +4,8 @@ import newGame.dto.LoginDTO;
 import newGame.dto.Request;
 import newGame.dto.Response;
 import newGame.dto.UserDTO;
+import newGame.interfacesProject.InterfaceAuthentication;
+import newGame.interfacesProject.InterfaceGame;
 import newGame.logic.GameSession;
 
 import java.net.*;
@@ -12,11 +14,14 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import newGame.interfacesProject.*;;
+
 
 public class Server {
     private static final int PORT = 2020;
     private Map<String, GameSession> gameSessions = new HashMap<>();  // Mapa para manejar sesiones de juego
-    private DatabaseHandler databaseHandler;
+    private DatabaseHandler databaseHandler;//clase encargada de interactuar con la base de datos
+    private InterfaceManager interfaceManager;
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -25,6 +30,15 @@ public class Server {
 
     public Server() {
         this.databaseHandler = new DatabaseHandler();  // Inicializar el handler de base de datos
+        // Initialize all the interfaces
+        InterfaceAuthentication logging = new InterfaceAuthentication();
+        InterfaceGame game = new InterfaceGame(null);
+        InterfaceCode code = new InterfaceCode();
+        InterfaceCreation creation = new InterfaceCreation(PORT);
+        GestorPreguntas gestorPreguntas = new GestorPreguntas();
+        
+        // Create InterfaceManager with all the interfaces
+        this.interfaceManager = new InterfaceManager(logging, game, code,creation,gestorPreguntas);
     }
 
     public void startServer() {
@@ -33,7 +47,7 @@ public class Server {
             ExecutorService executorService = Executors.newFixedThreadPool(10); // Usa un pool de 10 hilos
 
             while (true) {
-                Socket socket = serverSocket.accept();  // Aceptar conexión de un cliente
+                Socket socket = serverSocket.accept();  // El servidor espera y acepta conexiones de los clientes
                 System.out.println("Cliente conectado: " + socket.getInetAddress());
 
                 // Crear una nueva sesión de juego para cada cliente
@@ -67,7 +81,8 @@ public class Server {
 //            response = new Response(true, result, null);
 //        }
 
-        // Aquí podrías agregar otros casos para manejar más operaciones
+// Aquí podrías agregar otros casos para manejar más operaciones
+
 // Método para procesar las solicitudes del cliente
     public Response processRequest(Request request) {
         switch (request.getOperation()) {
@@ -108,7 +123,7 @@ public class Server {
         }
     }
 
-    // Manejar la creación de una nueva partida
+    // Manejar la creación de una nueva partida llamando a la base de datos
     private Response handleCrearPartida(Object payload) {
         try {
             Map<String, Object> params = (Map<String, Object>) payload;
