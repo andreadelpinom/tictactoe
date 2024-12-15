@@ -107,7 +107,6 @@ public class InterfaceCode extends JFrame {
 
     // Método para guardar el código ingresado
     private void guardarCodigo() {
-        codigoIngresado = code.getText();
         
         // Agregar lógica para enviar el código al servidor o realizar otra acción
     }
@@ -136,7 +135,7 @@ public class InterfaceCode extends JFrame {
     private void conectarAlServidor() {
         try {
             // Establecer conexión con el servidor
-            socket = new Socket("localhost", 12345); // Dirección IP y puerto del servidor
+            socket = new Socket("localhost", 2020); // Dirección IP y puerto del servidor
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 

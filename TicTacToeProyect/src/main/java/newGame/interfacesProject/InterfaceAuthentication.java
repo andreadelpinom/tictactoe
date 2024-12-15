@@ -123,6 +123,8 @@ public class InterfaceAuthentication extends JFrame {
                         JOptionPane.showMessageDialog(null, "Por favor, ingresa tu correo y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+
+                
                 // Llamar al DAO para verificar las credenciales
                 String resultado = seguridadDao.verificarUsuario(email, password);
                 System.out.println(resultado);
@@ -308,10 +310,22 @@ public class InterfaceAuthentication extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            InterfaceAuthentication frame = new InterfaceAuthentication();
-            frame.setVisible(true);
+            SocketClient socketClient = new SocketClient();
+            if (socketClient.establecerConexion()){
+                InterfaceAuthentication frame = new InterfaceAuthentication();
+                frame.setVisible(true);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "No se pudo conectar", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
         });
     }
+
+
+
+
+    
 
     // Clase para bordes redondeados
     private static class RoundedBorder extends AbstractBorder {
@@ -329,19 +343,5 @@ public class InterfaceAuthentication extends JFrame {
     }
 
    
-    
-private void iniciarServidor() {
-    // Iniciar el servidor en un hilo independiente para no bloquear la interfaz
-    new Thread(() -> {
-        try {
-            // Crear una instancia del servidor (sin necesidad de pasar el puerto)
-            Servidor servidor = new Servidor(); // Puerto ya está configurado dentro de Servidor
-            servidor.iniciar(); // Llamar al método iniciar del servidor
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al iniciar el servidor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }).start();
-}
 
 }

@@ -8,7 +8,7 @@ import newGame.dto.UserDTO;
 import java.io.*;
 import java.net.*;
 
-public class TestClient {
+public class TestClient2 {
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 2020); //peticion
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -25,8 +25,6 @@ public class TestClient {
             /// newUser.setRol("estudiante");
             /// Request request = new Request("SIGN_UP", newUser);
             /// 
-            
-            
             LoginDTO current_user = new LoginDTO();
 
             
@@ -37,7 +35,7 @@ public class TestClient {
 
 
             // Enviar solicitud
-
+            
             //out.writeObject(request);
             //System.out.println("Solicitud de registro enviada 1.");
             out.writeObject(request2);
